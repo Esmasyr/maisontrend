@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" fill="none">
+  <defs>
+    <linearGradient id="bagGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#e8c98a"/>
+      <stop offset="50%"  stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="#a07840"/>
+    </linearGradient>
+    <linearGradient id="gemRuby" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#e8728a"/>
+      <stop offset="100%" stop-color="#9b2040"/>
+    </linearGradient>
+    <linearGradient id="gemSapphire" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#8ab4e8"/>
+      <stop offset="100%" stop-color="#2060c0"/>
+    </linearGradient>
+    <linearGradient id="gemEmerald" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#7adba0"/>
+      <stop offset="100%" stop-color="#1a7a40"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- BAG BODY -->
+  <rect x="6" y="22" width="42" height="30" rx="4" fill="url(#bagGold)"/>
+  <!-- bag sheen -->
+  <rect x="6" y="22" width="42" height="8" rx="4" fill="rgba(255,255,255,0.18)"/>
+
+  <!-- BAG FLAP -->
+  <path d="M8 22 Q27 14 46 22" stroke="url(#bagGold)" stroke-width="2" fill="rgba(200,169,110,0.3)"/>
+
+  <!-- CLASP circle -->
+  <circle cx="27" cy="32" r="4.5" fill="#1a1410" stroke="url(#bagGold)" stroke-width="1.2"/>
+  <circle cx="27" cy="32" r="2"   fill="url(#bagGold)"/>
+
+  <!-- HANDLE -->
+  <path d="M15 22 Q15 10 27 10 Q39 10 39 22" stroke="url(#bagGold)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- GEM STRIP across top of bag -->
+  <!-- Ruby left -->
+  <polygon points="10,25 13,22 16,25 13,28" fill="url(#gemRuby)" filter="url(#glow)"/>
+  <line x1="11" y1="24" x2="13" y2="22" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+
+  <!-- Sapphire -->
+  <polygon points="20,24 23,21 26,24 23,27" fill="url(#gemSapphire)" filter="url(#glow)"/>
+  <line x1="21" y1="23" x2="23" y2="21" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+
+  <!-- Emerald -->
+  <polygon points="30,24 33,21 36,24 33,27" fill="url(#gemEmerald)" filter="url(#glow)"/>
+  <line x1="31" y1="23" x2="33" y2="21" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+
+  <!-- Ruby right -->
+  <polygon points="38,25 41,22 44,25 41,28" fill="url(#gemRuby)" filter="url(#glow)"/>
+  <line x1="39" y1="24" x2="41" y2="22" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+
+  <!-- tiny dot gems on body -->
+  <circle cx="14" cy="40" r="1.5" fill="url(#gemSapphire)" opacity="0.7"/>
+  <circle cx="40" cy="40" r="1.5" fill="url(#gemRuby)"     opacity="0.7"/>
+  <circle cx="27" cy="46" r="1.5" fill="url(#gemEmerald)"  opacity="0.7"/>
+
+  <!-- WORDMARK -->
+  <text x="58" y="34"
+        font-family="'Playfair Display', Georgia, serif"
+        font-size="18"
+        font-style="italic"
+        font-weight="400"
+        fill="#1a1410"
+        letter-spacing="1">Maison</text>
+
+  <text x="59" y="50"
+        font-family="'Didact Gothic', Helvetica, sans-serif"
+        font-size="8"
+        font-weight="400"
+        fill="#c9a96e"
+        letter-spacing="5">ÉLÉGANCE</text>
+</svg>

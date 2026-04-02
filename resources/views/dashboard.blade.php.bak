@@ -1,0 +1,252 @@
+@extends('layouts.app')
+
+@section('content')
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Didact+Gothic&display=swap');
+
+:root {
+    --ink:   #1a1410;
+    --cream: #f7f3ee;
+    --sand:  #e8e0d5;
+    --gold:  #c9a96e;
+    --gold2: #e8c98a;
+    --rouge: #9b4a5a;
+    --smoke: #6b6560;
+}
+
+.db-shell { min-height:100vh; background:var(--cream); font-family:'Didact Gothic',sans-serif; }
+
+.db-banner { background:var(--ink); padding:3.5rem 3rem 0; position:relative; overflow:hidden; animation:fadeIn .5s ease; }
+.db-banner::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 80% at 80% 50%,rgba(201,169,110,.12) 0%,transparent 70%), radial-gradient(ellipse 40% 60% at 10% 80%,rgba(155,74,90,.10) 0%,transparent 60%); }
+.db-banner-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; }
+.db-greeting-eyebrow { font-family:'Didact Gothic',sans-serif; font-size:.65rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:.6rem; }
+.db-greeting-name { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:400; font-style:italic; color:#f0ebe3; line-height:1.1; margin:0 0 .4rem; }
+.db-greeting-sub { font-size:.78rem; color:rgba(240,235,227,.45); letter-spacing:1.5px; margin-bottom:2.5rem; }
+.db-date-tag { flex-shrink:0; text-align:right; padding-bottom:2.5rem; }
+.db-date-day { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:700; color:rgba(201,169,110,.2); line-height:1; }
+.db-date-label { font-size:.65rem; letter-spacing:3px; color:rgba(240,235,227,.3); text-transform:uppercase; }
+
+.db-stats-strip { background:var(--ink); padding:0 3rem; animation:fadeIn .5s ease; }
+.db-stats-inner { max-width:1200px; margin:0 auto; border-top:1px solid rgba(201,169,110,.18); display:grid; grid-template-columns:repeat(3,1fr); }
+.db-stat { padding:2rem 1.5rem; border-right:1px solid rgba(201,169,110,.10); position:relative; transition:background .3s; }
+.db-stat:last-child { border-right:none; }
+.db-stat:hover { background:rgba(201,169,110,.05); }
+.db-stat-label { font-size:.6rem; letter-spacing:3px; text-transform:uppercase; color:rgba(240,235,227,.35); margin-bottom:.6rem; }
+.db-stat-value { font-family:'Playfair Display',serif; font-size:2.6rem; font-weight:400; color:#f0ebe3; line-height:1; margin-bottom:.3rem; }
+.db-stat-value span { font-size:1rem; color:var(--gold); font-family:'Didact Gothic',sans-serif; margin-left:2px; }
+.db-stat-sub { font-size:.65rem; color:rgba(240,235,227,.3); letter-spacing:1px; }
+.db-stat-icon { position:absolute; top:1.8rem; right:1.5rem; opacity:.08; }
+
+.db-body { max-width:1200px; margin:0 auto; padding:2.5rem 3rem; display:grid; grid-template-columns:1fr 1.2fr; gap:1.5rem; align-items:start; }
+.db-section-head { display:flex; align-items:baseline; gap:1rem; margin-bottom:1.2rem; }
+.db-section-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:500; color:var(--ink); }
+.db-section-line { flex:1; height:1px; background:var(--sand); }
+
+.db-quick-card, .db-orders-card { background:#fff; border:1px solid var(--sand); }
+.db-quick-card { animation:fadeSlide .5s ease .1s both; }
+.db-orders-card { animation:fadeSlide .5s ease .2s both; }
+
+.db-nav-item { display:flex; align-items:center; gap:1.2rem; padding:1.1rem 1.5rem; border-bottom:1px solid #f5f1ec; text-decoration:none; transition:all .2s; position:relative; overflow:hidden; }
+.db-nav-item:last-child { border-bottom:none; }
+.db-nav-item::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--gold); transform:scaleY(0); transition:transform .2s; }
+.db-nav-item:hover { background:#faf8f5; }
+.db-nav-item:hover::before { transform:scaleY(1); }
+.db-nav-icon { width:36px; height:36px; border:1px solid var(--sand); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+.db-nav-item:hover .db-nav-icon { border-color:var(--gold); background:rgba(201,169,110,.06); }
+.db-nav-name { font-size:.82rem; font-weight:500; color:var(--ink); letter-spacing:.5px; display:block; }
+.db-nav-desc { font-size:.68rem; color:var(--smoke); margin-top:1px; }
+.db-nav-arrow { color:#ccc; transition:transform .2s,color .2s; }
+.db-nav-item:hover .db-nav-arrow { transform:translateX(3px); color:var(--gold); }
+
+.db-order-item { padding:1.2rem 1.5rem; border-bottom:1px solid #f5f1ec; text-decoration:none; display:block; transition:background .2s; }
+.db-order-item:last-child { border-bottom:none; }
+.db-order-item:hover { background:#faf8f5; }
+.db-order-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:.4rem; }
+.db-order-id { font-family:'Playfair Display',serif; font-size:.85rem; font-style:italic; color:var(--ink); }
+.db-order-amount { font-size:.9rem; font-weight:500; color:var(--rouge); letter-spacing:.5px; }
+.db-order-meta { display:flex; align-items:center; justify-content:space-between; }
+.db-order-date { font-size:.65rem; color:var(--smoke); letter-spacing:1.5px; text-transform:uppercase; }
+.db-status { font-size:.6rem; letter-spacing:2px; text-transform:uppercase; padding:.2rem .7rem; border:1px solid; }
+.db-status.delivered { color:#5a8a6a; border-color:#5a8a6a; background:rgba(90,138,106,.06); }
+.db-status.pending   { color:var(--gold); border-color:var(--gold); background:rgba(201,169,110,.06); }
+
+.db-empty { padding:3rem 2rem; text-align:center; }
+.db-empty-title { font-family:'Playfair Display',serif; font-size:1rem; font-style:italic; color:var(--smoke); margin-bottom:.5rem; }
+.db-empty-sub { font-size:.72rem; color:#bbb; letter-spacing:1px; margin-bottom:1.5rem; }
+.db-empty-btn { display:inline-block; background:var(--ink); color:#f0ebe3; font-size:.68rem; letter-spacing:3px; text-transform:uppercase; padding:.75rem 1.8rem; text-decoration:none; transition:background .2s; }
+.db-empty-btn:hover { background:var(--rouge); }
+
+.db-profile-strip { grid-column:1/-1; background:var(--ink); display:flex; align-items:center; justify-content:space-between; padding:1.5rem 2rem; gap:2rem; animation:fadeSlide .5s ease .3s both; }
+.db-profile-left { display:flex; align-items:center; gap:1.2rem; }
+.db-profile-avatar { width:48px; height:48px; border:1px solid rgba(201,169,110,.4); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.2rem; font-style:italic; color:var(--gold); flex-shrink:0; }
+.db-profile-name { font-family:'Playfair Display',serif; font-size:1rem; font-style:italic; color:#f0ebe3; }
+.db-profile-email { font-size:.65rem; color:rgba(240,235,227,.35); letter-spacing:1.5px; margin-top:2px; }
+.db-profile-actions { display:flex; gap:.8rem; }
+.db-profile-btn { font-size:.65rem; letter-spacing:2.5px; text-transform:uppercase; padding:.6rem 1.4rem; text-decoration:none; border:1px solid; transition:all .2s; }
+.db-profile-btn.outline { color:rgba(240,235,227,.5); border-color:rgba(240,235,227,.15); }
+.db-profile-btn.outline:hover { color:var(--gold); border-color:var(--gold); }
+.db-profile-btn.solid { color:var(--ink); background:var(--gold); border-color:var(--gold); }
+.db-profile-btn.solid:hover { background:var(--gold2); border-color:var(--gold2); }
+
+@keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:768px){
+    .db-banner,.db-stats-strip{padding-left:1.5rem;padding-right:1.5rem;}
+    .db-body{grid-template-columns:1fr;padding:1.5rem;}
+    .db-stats-inner{grid-template-columns:1fr;}
+    .db-stat{border-right:none;border-bottom:1px solid rgba(201,169,110,.10);}
+    .db-date-tag{display:none;}
+    .db-profile-strip{flex-direction:column;align-items:flex-start;grid-column:1;}
+}
+</style>
+
+<div class="db-shell">
+
+    <div class="db-banner">
+        <div class="db-banner-inner">
+            <div>
+                <p class="db-greeting-eyebrow">Hoş Geldiniz</p>
+                <h1 class="db-greeting-name">{{ Auth::user()->name }}</h1>
+                <p class="db-greeting-sub">Hesabınızı buradan yönetebilirsiniz</p>
+            </div>
+            <div class="db-date-tag">
+                <div class="db-date-day">{{ now()->format('d') }}</div>
+                <div class="db-date-label">{{ now()->translatedFormat('F Y') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="db-stats-strip">
+        <div class="db-stats-inner">
+            <div class="db-stat">
+                <div class="db-stat-label">Toplam Sipariş</div>
+                <div class="db-stat-value">{{ Auth::user()->orders()->count() }}</div>
+                <div class="db-stat-sub">sipariş verildi</div>
+                <svg class="db-stat-icon" width="56" height="56" fill="none" stroke="#c9a96e" viewBox="0 0 24 24">
+                    <path stroke-width="1.2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+            </div>
+            <div class="db-stat">
+                <div class="db-stat-label">Toplam Harcama</div>
+                <div class="db-stat-value">{{ number_format(Auth::user()->orders()->sum('total_amount'), 0) }}<span>₺</span></div>
+                <div class="db-stat-sub">toplam alışveriş</div>
+                <svg class="db-stat-icon" width="56" height="56" fill="none" stroke="#c9a96e" viewBox="0 0 24 24">
+                    <path stroke-width="1.2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="db-stat">
+                <div class="db-stat-label">Favori Ürünler</div>
+                <div class="db-stat-value">{{ Auth::user()->favorites()->count() }}</div>
+                <div class="db-stat-sub">beğenilen ürün</div>
+                <svg class="db-stat-icon" width="56" height="56" fill="none" stroke="#c9a96e" viewBox="0 0 24 24">
+                    <path stroke-width="1.2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="db-body">
+
+        <div>
+            <div class="db-section-head">
+                <span class="db-section-title">Hızlı Erişim</span>
+                <span class="db-section-line"></span>
+            </div>
+            <div class="db-quick-card">
+                <a href="{{ route('orders.index') }}" class="db-nav-item">
+                    <div class="db-nav-icon">
+                        <svg width="16" height="16" fill="none" stroke="#9b4a5a" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="db-nav-name">Siparişlerim</span>
+                        <span class="db-nav-desc">Tüm sipariş geçmişiniz</span>
+                    </div>
+                    <svg class="db-nav-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{{ route('favorites.index') }}" class="db-nav-item">
+                    <div class="db-nav-icon">
+                        <svg width="16" height="16" fill="none" stroke="#9b4a5a" viewBox="0 0 24 24"><path stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="db-nav-name">Favorilerim</span>
+                        <span class="db-nav-desc">Beğendiğiniz ürünler</span>
+                    </div>
+                    <svg class="db-nav-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{{ route('cart.index') }}" class="db-nav-item">
+                    <div class="db-nav-icon">
+                        <svg width="16" height="16" fill="none" stroke="#9b4a5a" viewBox="0 0 24 24"><path stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="db-nav-name">Sepetim</span>
+                        <span class="db-nav-desc">Aktif sepetiniz</span>
+                    </div>
+                    <svg class="db-nav-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{{ route('products.index') }}" class="db-nav-item">
+                    <div class="db-nav-icon">
+                        <svg width="16" height="16" fill="none" stroke="#9b4a5a" viewBox="0 0 24 24"><path stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="db-nav-name">Tüm Ürünler</span>
+                        <span class="db-nav-desc">Koleksiyonu keşfedin</span>
+                    </div>
+                    <svg class="db-nav-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div>
+            <div class="db-section-head">
+                <span class="db-section-title">Son Siparişler</span>
+                <span class="db-section-line"></span>
+            </div>
+            <div class="db-orders-card">
+                @if(Auth::user()->orders()->count() > 0)
+                    @foreach(Auth::user()->orders()->latest()->take(4)->get() as $order)
+                    <a href="{{ route('orders.show', $order) }}" class="db-order-item">
+                        <div class="db-order-row">
+                            <span class="db-order-id">Sipariş #{{ $order->id }}</span>
+                            <span class="db-order-amount">{{ number_format($order->total_amount, 2) }} ₺</span>
+                        </div>
+                        <div class="db-order-meta">
+                            <span class="db-order-date">{{ $order->created_at->format('d.m.Y') }}</span>
+                            <span class="db-status {{ $order->status === 'delivered' ? 'delivered' : 'pending' }}">
+                                {{ $order->status === 'delivered' ? 'Teslim Edildi' : 'Hazırlanıyor' }}
+                            </span>
+                        </div>
+                    </a>
+                    @endforeach
+                @else
+                    <div class="db-empty">
+                        <svg width="40" height="40" fill="none" stroke="#ccc" viewBox="0 0 24 24" style="margin:0 auto 1rem;">
+                            <path stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <p class="db-empty-title">Henüz sipariş yok</p>
+                        <p class="db-empty-sub">İlk siparişinizi vermek için koleksiyona göz atın</p>
+                        <a href="{{ route('products.index') }}" class="db-empty-btn">Alışverişe Başla</a>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="db-profile-strip">
+            <div class="db-profile-left">
+                <div class="db-profile-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                <div>
+                    <div class="db-profile-name">{{ Auth::user()->name }}</div>
+                    <div class="db-profile-email">{{ Auth::user()->email }}</div>
+                </div>
+            </div>
+            <div class="db-profile-actions">
+                <a href="{{ route('profile.index') }}" class="db-profile-btn outline">Profilim</a>
+                <a href="{{ route('profile.edit') }}"  class="db-profile-btn solid">Düzenle</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@endsection
